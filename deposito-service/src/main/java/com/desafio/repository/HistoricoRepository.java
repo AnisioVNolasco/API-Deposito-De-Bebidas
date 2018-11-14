@@ -13,7 +13,17 @@ public interface HistoricoRepository extends Repository<HistoricoModel, Integer>
 
 	List<HistoricoModel> findAll();
 	
-	List<HistoricoModel> findAllByOrderByDataHora();
+	List<HistoricoModel> findByEventoByOrderByDataHora(String evento);
+	
+	//List<HistoricoModel> findByEventoByOrderByDataHoraDesc(String evento);
+	
+	//List<HistoricoModel> findByEventoByOrderByIdSecao(String evento);
+	
+	//List<HistoricoModel> findByEventoByOrderByIdSecaoDesc(String evento);
+	
+	//List<HistoricoModel> findByEventoIdTipoBebida(String evento, Integer idTipoBebida);
+	
+	//List<HistoricoModel> findByEventoByIdSecaoByOrderByDataHora(String evento, Integer idSecao);
 
 	List<HistoricoModel> findByResponsavel(String responsavel);
 	

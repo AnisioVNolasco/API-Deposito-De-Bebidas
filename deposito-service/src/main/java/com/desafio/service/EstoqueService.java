@@ -28,6 +28,7 @@ import com.desafio.model.TipoBebidaModel;
 import com.desafio.repository.HistoricoRepository;
 import com.desafio.repository.SecaoRepository;
 import com.desafio.repository.TipoBebidaRepository;
+import com.desafio.util.Evento;
 
 @RestController
 @RequestMapping("/service")
@@ -137,7 +138,6 @@ public class EstoqueService {
 	public @ResponseBody ResponseModel entrada(@RequestBody EstoqueEntradaDTO entrada) {
 
 		try {
-
 			TipoBebidaModel tipoBebida = this.tipoBebidaRepository.findById(entrada.getIdTipoBebida());
 			if (tipoBebida != null) {
 				SecaoModel secao = this.secaoRepository.findById(entrada.getIdSecao());
@@ -147,7 +147,7 @@ public class EstoqueService {
 						if (novoVolume <= tipoBebida.getCapacidadeMaxima()) {
 							if (entrada.getResponsavel() != null && !entrada.getResponsavel().isEmpty()) {
 								HistoricoModel historico = new HistoricoModel();
-								historico.setEvento("Entrada");
+								historico.setEvento(Evento.ENTRADA.getEvento());
 								historico.setDataHora(LocalDateTime.now());
 								historico.setResponsavel(entrada.getResponsavel());
 								historico.setIdSecao(secao.getId());
@@ -193,16 +193,15 @@ public class EstoqueService {
 	 */
 	@RequestMapping(value = "/estoque/saida", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody ResponseModel saida(@RequestBody EstoqueSaidaDTO saida) {
-
+		
 		try {
-
 			SecaoModel secao = this.secaoRepository.findById(saida.getIdSecao());
 			if (secao != null) {
 				Double novoVolume = secao.getVolume() - saida.getVolumeDeSaida();
 				if (novoVolume >= 0.0) {
 					if (saida.getResponsavel() != null && !saida.getResponsavel().isEmpty()) {
 						HistoricoModel historico = new HistoricoModel();
-						historico.setEvento("Saida");
+						historico.setEvento(Evento.SAIDA.getEvento());
 						historico.setDataHora(LocalDateTime.now());
 						historico.setResponsavel(saida.getResponsavel());
 						historico.setIdSecao(secao.getId());
