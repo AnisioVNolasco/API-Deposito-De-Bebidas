@@ -1,6 +1,6 @@
 package com.desafio.model;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +25,7 @@ public class HistoricoModel {
 	private String responsavel;
 	
 	@Column(name="id_secao")
-	private String idSecao;
+	private Integer idSecao;
 	
 	@Column(name="volume")
 	private Double volume;
@@ -34,7 +34,7 @@ public class HistoricoModel {
 	private Integer idTipoBebida;
 	
 	@Column(name="dataHora")
-	private Date dataHora;
+	private LocalDateTime dataHora;
 	
 	@Transient
 	private TipoBebidaModel tipoBebida;
@@ -66,11 +66,11 @@ public class HistoricoModel {
 		this.responsavel = responsavel;
 	}
 
-	public String getIdSecao() {
+	public Integer getIdSecao() {
 		return idSecao;
 	}
 
-	public void setIdSecao(String idSecao) {
+	public void setIdSecao(Integer idSecao) {
 		this.idSecao = idSecao;
 	}
 
@@ -90,11 +90,11 @@ public class HistoricoModel {
 		this.idTipoBebida = idTipoBebida;
 	}
 
-	public Date getDataHora() {
+	public LocalDateTime getDataHora() {
 		return dataHora;
 	}
 
-	public void setDataHora(Date dataHora) {
+	public void setDataHora(LocalDateTime dataHora) {
 		this.dataHora = dataHora;
 	}
 

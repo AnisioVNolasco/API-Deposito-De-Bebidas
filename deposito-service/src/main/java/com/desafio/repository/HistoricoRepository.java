@@ -12,6 +12,12 @@ public interface HistoricoRepository extends Repository<HistoricoModel, Integer>
 	void delete(HistoricoModel secao);
 
 	List<HistoricoModel> findAll();
+	
+	List<HistoricoModel> findAllByOrderByDataHora();
 
 	List<HistoricoModel> findByResponsavel(String responsavel);
+	
+	List<HistoricoModel> findByIdSecao(Integer idSecao);
+	
+	List<HistoricoModel> findByIdTipoBebida(Integer idTipoBebida);
 }

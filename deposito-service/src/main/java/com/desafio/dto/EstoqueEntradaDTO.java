@@ -5,6 +5,7 @@ public class EstoqueEntradaDTO {
 	private Integer idSecao;
 	private Integer idTipoBebida;
 	private Double volumeDeEntrada;
+	private String responsavel;
 	
 	public Integer getIdSecao() {
 		return idSecao;
@@ -24,4 +25,10 @@ public class EstoqueEntradaDTO {
 	public void setVolumeDeEntrada(Double volumeDeEntrada) {
 		this.volumeDeEntrada = volumeDeEntrada;
 	}
+	public String getResponsavel() {
+		return responsavel;
+	}
+	public void setResponsavel(String responsavel) {
+		this.responsavel = responsavel;
+	}	
 }
