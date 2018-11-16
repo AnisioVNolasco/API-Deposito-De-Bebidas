@@ -45,5 +45,23 @@ Para o desenvolvimento desta solução, foi utilizado:
 As configurações da aplicação, como porta e configurações do banco, estão no arquivo:
 `deposito-service/src/main/resources/application.properties`
 
+### Instruções de uso
+ - Para baixar o projeto:
+```
+$ git clone https://github.com/AnisioVNolasco/API-Deposito-De-Bebidas.git
+```
+ - Após baixar, entre na pasta:
+```
+$ cd API-Deposito-De-Bebidas/deposito-service/
+```
+ - Compile o projeto:
+```
+$ mvn clean install
+```
+ - Execute o projeto:
+```
+$ java -jar target/deposito-service-0.0.1-SNAPSHOT.war
+```
+
 Após baixar, compilar e iniciar aplicação, a documentação gerada pelo Swagger, pode ser acessada pelo link:
 http://localhost:8090/swagger-ui.html
