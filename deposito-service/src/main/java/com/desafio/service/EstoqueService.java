@@ -29,9 +29,14 @@ import com.desafio.repository.HistoricoRepository;
 import com.desafio.repository.SecaoRepository;
 import com.desafio.repository.TipoBebidaRepository;
 import com.desafio.util.Evento;
+import com.desafio.util.NoContentException;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping("/service")
+@RequestMapping("/estoque")
 public class EstoqueService {
 
 	@Autowired
@@ -43,12 +48,21 @@ public class EstoqueService {
 	@Autowired
 	private HistoricoRepository historicoRepository;
 
-	/**
-	 * CONSULTAR VOLUME TOTAL DE BEBIDAS NO ESTOQUE
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/estoque", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ApiOperation(
+			value="Listar todo estoque", 
+			response = TotalBebidaDTO.class,
+            responseContainer = "List", 
+			notes="Essa operação lista todo o estoque de bebidas disponível para venda.")
+	@ApiResponses(value= {
+			@ApiResponse(
+					code=200, 
+					message="Retorna uma lista de todo o estoque de bebidas.",
+					response = TotalBebidaDTO.class,
+		            responseContainer = "List"
+					)
+ 
+	})
+	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody Object[] consultar() {
 
 		List<SecaoModel> listSecao = this.secaoRepository.findAll();
@@ -68,17 +82,26 @@ public class EstoqueService {
 			}
 		}
 
-		return listTotais.values().toArray();
+		if(!listTotais.isEmpty()) {
+			return listTotais.values().toArray();	
+		}
+		
+		throw new NoContentException(); 
 	}
 
-	/**
-	 * CONSULTA DISPONIBILIDADE DE ARMAZENAMENTO (ESPAÇO) PELO TIPO DE BEBIDA E
-	 * VOLUME
-	 * 
-	 * @param idTipoBebida, volume
-	 * @return
-	 */
-	@RequestMapping(value = "/estoque/{idTipoBebida}/{volume}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ApiOperation(
+			value="Verifica espaço no estoque", 
+			response = EspacoEstoqueDTO.class,
+			notes="Essa operação verifica se há espaço para um determinado tipo de bebida no estoque, pelo id do tipo de bebida e volume desejado para armazenar.")
+	@ApiResponses(value= {
+			@ApiResponse(
+					code=200, 
+					message="Retorna uma mensagem se há espaço suficiente de armazenamento e lista de seçoes disponiveis para o armazenamento.",
+					response = EspacoEstoqueDTO.class
+					)
+ 
+	})
+	@RequestMapping(value = "/{idTipoBebida}/{volume}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody EspacoEstoqueDTO consultarEspaco(@PathVariable("idTipoBebida") Integer idTipoBebida,
 			@PathVariable("volume") Double volume) {
 
@@ -104,13 +127,19 @@ public class EstoqueService {
 		return espacoEstoque;
 	}
 
-	/**
-	 * CONSULTA DISPONIBILIDADE DE VENDA PELO TIPO DE BEBIDA
-	 * 
-	 * @param idTipoBebida
-	 * @return
-	 */
-	@RequestMapping(value = "/estoque/{idTipoBebida}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ApiOperation(
+			value="Verifica a disponibilidade de bebida no estoque", 
+			response = DisponibilidadeEstoqueDTO.class,
+			notes="Essa operação verifica a disponibilidade de determinado tipo de bebida no estoque, disponível para venda.")
+	@ApiResponses(value= {
+			@ApiResponse(
+					code=200, 
+					message="Retorna a disponibilidade de determinada bebida no estoque.",
+					response = DisponibilidadeEstoqueDTO.class
+					)
+ 
+	})
+	@RequestMapping(value = "/{idTipoBebida}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody DisponibilidadeEstoqueDTO consultarDisponibilidade(
 			@PathVariable("idTipoBebida") Integer idTipoBebida) {
 
@@ -128,13 +157,24 @@ public class EstoqueService {
 		return estoque;
 	}
 
-	/**
-	 * ATUALIZAR A SECAO COM ENTRADA DE BEBIDAS
-	 * 
-	 * @param estoqueEntrada
-	 * @return
-	 */
-	@RequestMapping(value = "/estoque/entrada", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ApiOperation(
+			value="Atualiza entrada de bebida no estoque", 
+			response = ResponseModel.class,
+			notes="Essa operação atualiza o estoque com a entrada de determinado tipo de bebida, informando a seção pelo id, o tipo de bebida pelo id, o volume a ser armazenado e o responsável pela entrada.")
+	@ApiResponses(value= {
+			@ApiResponse(
+					code=200, 
+					message="Retorna uma mensagem de sucesso para a entrada de bebida.",
+					response = ResponseModel.class
+					),
+			@ApiResponse(
+					code=500, 
+					message="Caso tenha algum erro retorna um ResponseModel com a Exception ou o motivo da impossibilidade da entrada.",
+					response=ResponseModel.class
+					)
+ 
+	})
+	@RequestMapping(value = "/entrada", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody ResponseModel entrada(@RequestBody EstoqueEntradaDTO entrada) {
 
 		try {
@@ -163,7 +203,7 @@ public class EstoqueService {
 
 								return new ResponseModel(1, "Registro de entrada atualizado com sucesso!");
 							} else {
-								return new ResponseModel(0, "Responsavel não foi informado!");
+								return new ResponseModel(0, "Responsável não foi informado!");
 							}
 						} else {
 							return new ResponseModel(0,
@@ -185,13 +225,24 @@ public class EstoqueService {
 		}
 	}
 
-	/**
-	 * ATUALIZAR A SECAO COM SAIDA DE BEBIDAS
-	 * 
-	 * @param estoqueSaida
-	 * @return
-	 */
-	@RequestMapping(value = "/estoque/saida", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ApiOperation(
+			value="Atualiza saida de bebida no estoque", 
+			response = ResponseModel.class,
+			notes="Essa operação atualiza o estoque com a saida de determinado tipo de bebida, informando a seção pelo id, o volume a ser retirado e o responsável pela saída.")
+	@ApiResponses(value= {
+			@ApiResponse(
+					code=200, 
+					message="Retorna uma mensagem de sucesso para a saída de bebida.",
+					response = ResponseModel.class
+					),
+			@ApiResponse(
+					code=500, 
+					message="Caso tenha algum erro retorna um ResponseModel com a Exception ou o motivo da impossibilidade de saída.",
+					response=ResponseModel.class
+					)
+ 
+	})
+	@RequestMapping(value = "/saida", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody ResponseModel saida(@RequestBody EstoqueSaidaDTO saida) {
 		
 		try {
@@ -217,9 +268,9 @@ public class EstoqueService {
 
 						this.secaoRepository.save(secao);
 
-						return new ResponseModel(1, "Registro de saida atualizado com sucesso!");
+						return new ResponseModel(1, "Registro de saída atualizado com sucesso!");
 					} else {
-						return new ResponseModel(0, "Responsavel não foi informado!");
+						return new ResponseModel(0, "Responsável não foi informado!");
 					}
 				} else {
 					return new ResponseModel(0, "Esta seção não possui volume suficiente para essa retirada!");

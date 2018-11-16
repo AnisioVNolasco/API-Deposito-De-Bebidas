@@ -12,6 +12,8 @@ public interface SecaoRepository extends Repository<SecaoModel, Integer> {
 	void delete(SecaoModel secao);
  
 	List<SecaoModel> findAll();
+	
+	List<SecaoModel> findByIdTipoBebida(Integer id);
  
 	SecaoModel findById(Integer id);
 	

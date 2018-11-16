@@ -10,8 +10,9 @@ import javax.persistence.Table;
 @Table(name="tipo_bebida")
 @Entity
 public class TipoBebidaModel {
+
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@Column(name="id")
 	private Integer id;
  

@@ -11,106 +11,124 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.desafio.dto.TipoBebidaDTO;
 import com.desafio.model.ResponseModel;
 import com.desafio.model.TipoBebidaModel;
 import com.desafio.repository.TipoBebidaRepository;
+import com.desafio.util.NoContentException;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping("/service")
+@RequestMapping("/tipobebida")
 public class TipoBebidaService {
 	@Autowired
 	private TipoBebidaRepository tipoBebidaRepository; 
  
-	/**
-	 * SALVAR UM NOVO TIPO DE BEBIDA
-	 * @param TipoBebida
-	 * @return
-	 */
-	@RequestMapping(value="/tipobebida", method = RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody ResponseModel salvar(@RequestBody TipoBebidaModel tipoBebida){
+	@ApiOperation(
+			value="Cadastrar um novo tipo de bebida", 
+			response=ResponseModel.class, 
+			notes="Essa operação salva um novo registro com as informações do tipo de bebida.")
+	@ApiResponses(value= {
+			@ApiResponse(
+					code=200, 
+					message="Retorna um ResponseModel com uma mensagem de sucesso",
+					response=ResponseModel.class
+					),
+			@ApiResponse(
+					code=500, 
+					message="Caso tenhamos algum erro vamos retornar um ResponseModel com a Exception",
+					response=ResponseModel.class
+					)
+ 
+	})
+	@RequestMapping(value="", method = RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public @ResponseBody ResponseModel salvar(@RequestBody TipoBebidaDTO tipoBebida){
   
 		try {
- 
-			this.tipoBebidaRepository.save(tipoBebida);
- 
-			return new ResponseModel(1,"Registro salvo com sucesso!");
- 
+			if(tipoBebida.getNome() != null && !tipoBebida.getNome().isEmpty() && tipoBebida.getCapacidadeMaxima() != null) {
+				this.tipoBebidaRepository.save(new TipoBebidaModel(tipoBebida.getNome(), tipoBebida.getCapacidadeMaxima()));
+				return new ResponseModel(1,"Tipo de bebida salvo com sucesso!");
+			}
+			
+			return new ResponseModel(0,"Novo tipo de bebida não cadastrada. Para cadastrar um novo tipo de bebida, deve-se informar o nome e a capacidade máxima de armazenamento");
 		}catch(Exception e) {
  
 			return new ResponseModel(0,e.getMessage());			
 		}
 	}
  
-	/**
-	 * ATUALIZAR O REGISTRO DE UM TIPO DE BEBIDA
-	 * @param secao
-	 * @return
-	 */
-	@RequestMapping(value="/tipobebida", method = RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody ResponseModel atualizar(@RequestBody TipoBebidaModel tipoBebida){
+	@ApiOperation(
+			value="Listar todos os tipos de bebidas", 
+			response = TipoBebidaModel.class,
+            responseContainer = "List", 
+			notes="Essa operação lista todos os tipos de bebidas cadastradas.")
+	@ApiResponses(value= {
+			@ApiResponse(
+					code=200, 
+					message="Retorna uma lista de tipos de bebidas.",
+					response = TipoBebidaModel.class,
+		            responseContainer = "List"
+					)
  
-		try {
- 
-			this.tipoBebidaRepository.save(tipoBebida);		
- 
-			return new ResponseModel(1,"Registro atualizado com sucesso!");
- 
-		}catch(Exception e) {
- 
-			return new ResponseModel(0,e.getMessage());
-		}
-	}
- 
-	/**
-	 * CONSULTAR TODAS OS TIPOS DE BEBIDAS
-	 * @return
-	 */
-	@RequestMapping(value="/tipobebida", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	})
+	@RequestMapping(value="", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody List<TipoBebidaModel> consultar(){
- 
-		return this.tipoBebidaRepository.findAll();
+ 		
+		List<TipoBebidaModel> list = this.tipoBebidaRepository.findAll();
+		
+		if(list != null && !list.isEmpty()) {
+			return list;	
+		}
+		
+		throw new NoContentException(); 
 	}
  
-	/**
-	 * BUSCAR UM TIPO DE BEBIDA PELO ID
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value="/tipobebida/{id}", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ApiOperation(
+			value="Obter tipo de bebida pelo id", 
+			response = TipoBebidaModel.class,
+			notes="Essa operação recupera o tipo de bebida cadastrado com id informado.")
+	@ApiResponses(value= {
+			@ApiResponse(
+					code=200, 
+					message="Retorna um tipo de bebida.",
+					response = TipoBebidaModel.class
+					)
+	})
+	@RequestMapping(value="/{id}", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody TipoBebidaModel buscar(@PathVariable("id") Integer id){
- 
-		return this.tipoBebidaRepository.findById(id);
+		
+		TipoBebidaModel tipoBedida = this.tipoBebidaRepository.findById(id);
+		
+		if(tipoBedida != null) {
+			return tipoBedida;	
+		}
+		
+		throw new NoContentException(); 
 	}
 	
-	/**
-	 * BUSCAR UM TIPO DE BEBIDA PELO NOME
-	 * @param nome
-	 * @return
-	 */
-	@RequestMapping(value="/tipobebida/{nome}", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ApiOperation(
+			value="Obter tipo de bebida pelo nome", 
+			response = TipoBebidaModel.class,
+			notes="Essa operação recupera o tipo de bebida cadastrado com nome informado.")
+	@ApiResponses(value= {
+			@ApiResponse(
+					code=200, 
+					message="Retorna um tipo de bebida.",
+					response = TipoBebidaModel.class
+					)
+	})
+	@RequestMapping(value="/{nome}", method = RequestMethod.GET, produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody TipoBebidaModel buscar(@PathVariable("nome") String nome){
  
-		return this.tipoBebidaRepository.findByNome(nome);
-	}
- 
-	/***
-	 * EXCLUIR UM TIPO DE BEBIDA PELO ID
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value="/tipobebida/{id}", method = RequestMethod.DELETE, produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody ResponseModel excluir(@PathVariable("id") Integer id){
- 
-		TipoBebidaModel tipoBebidaModel = tipoBebidaRepository.findById(id);
- 
-		try {
- 
-			tipoBebidaRepository.delete(tipoBebidaModel);
- 
-			return new ResponseModel(1, "Registro excluido com sucesso!");
- 
-		}catch(Exception e) {
-			return new ResponseModel(0, e.getMessage());
+		TipoBebidaModel tipoBedida = this.tipoBebidaRepository.findByNome(nome);
+		
+		if(tipoBedida != null) {
+			return tipoBedida;	
 		}
+		
+		throw new NoContentException();
 	}
 }

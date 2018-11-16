@@ -6,13 +6,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Table(name="secao")
 @Entity
 public class SecaoModel {
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@Column(name="id")
 	private Integer id;
 	
@@ -24,9 +23,6 @@ public class SecaoModel {
 	
 	@Column(name="volume")
 	private Double volume;
-	
-	@Transient
-	private TipoBebidaModel tipoBebida;
 	
 	public SecaoModel() {	}
 
@@ -67,13 +63,4 @@ public class SecaoModel {
 		this.volume = volume;
 	}
 
-	public TipoBebidaModel getTipoBebida() {
-		return tipoBebida;
-	}
-
-	public void setTipoBebida(TipoBebidaModel tipoBebida) {
-		this.tipoBebida = tipoBebida;
-	}
-	
-	
 }

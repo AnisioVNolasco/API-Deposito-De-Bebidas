@@ -8,13 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Table(name="historico")
 @Entity
 public class HistoricoModel {
+
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@Column(name="id")
 	private Integer id;
 	
@@ -35,12 +35,6 @@ public class HistoricoModel {
 	
 	@Column(name="dataHora")
 	private LocalDateTime dataHora;
-	
-	@Transient
-	private TipoBebidaModel tipoBebida;
-	
-	@Transient
-	private SecaoModel secao;
 
 	public Integer getId() {
 		return id;
@@ -74,14 +68,6 @@ public class HistoricoModel {
 		this.idSecao = idSecao;
 	}
 
-	public Double getVolume() {
-		return volume;
-	}
-
-	public void setVolume(Double volume) {
-		this.volume = volume;
-	}
-
 	public Integer getIdTipoBebida() {
 		return idTipoBebida;
 	}
@@ -90,28 +76,20 @@ public class HistoricoModel {
 		this.idTipoBebida = idTipoBebida;
 	}
 
+	public Double getVolume() {
+		return volume;
+	}
+
+	public void setVolume(Double volume) {
+		this.volume = volume;
+	}
+
 	public LocalDateTime getDataHora() {
 		return dataHora;
 	}
 
 	public void setDataHora(LocalDateTime dataHora) {
 		this.dataHora = dataHora;
-	}
-
-	public TipoBebidaModel getTipoBebida() {
-		return tipoBebida;
-	}
-
-	public void setTipoBebida(TipoBebidaModel tipoBebida) {
-		this.tipoBebida = tipoBebida;
-	}
-
-	public SecaoModel getSecao() {
-		return secao;
-	}
-
-	public void setSecao(SecaoModel secao) {
-		this.secao = secao;
 	}
 		
 }
